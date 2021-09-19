@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Alert from 'react-bootstrap/Alert';
+
 
 import '../styles/tasklist.scss'
 
@@ -13,24 +15,68 @@ interface Task {
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [controlField, setControlField] = useState(false);
+  const [controlFieldText, setControlFieldText] = useState(false);
+  const [controlChangeCheck, setControlChangeCheck] = useState(false);
 
+  
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(newTaskTitle == ''){
+      setControlField(true);
+      setControlFieldText(false);
+    }else{
+      let title;
+      tasks.map(task =>(
+        title = task.title
+      ))
+
+      if(title === newTaskTitle){
+        setControlFieldText(true);
+        setControlField(false);
+      }else{
+        setControlField(false);
+        setControlFieldText(false);
+        let objTasks = {
+          id: Math.floor(Math.random() * 100 + 1),  
+          title: newTaskTitle,
+          isComplete: false  
+        }
+        setTasks([...tasks, objTasks]);
+        setNewTaskTitle('');
+      }  
+    }
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const arrayTask = [...tasks];
+   
+    arrayTask.map((index) =>{
+      if(index.id == id && index.isComplete === false){
+        index.isComplete = true;
+        setControlChangeCheck(true);
+      }else if(index.id == id && index.isComplete === true){
+        index.isComplete = false;
+        setControlChangeCheck(false);
+      }
+    })
+    setTasks(arrayTask)
+    
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const array = [...tasks]; 
+    const newTasks = array.filter((array) => array.id !== id);
+    setTasks(newTasks);
   }
+
 
   return (
     <section className="task-list container">
       <header>
         <h2>Minhas tasks</h2>
-
         <div className="input-group">
           <input 
             type="text" 
@@ -43,7 +89,14 @@ export function TaskList() {
           </button>
         </div>
       </header>
+      {controlField &&
+        <Alert variant="danger">Por favor informe uma tasks! </Alert>
+      }
 
+      {controlFieldText &&
+        <Alert variant="danger"> Já existe uma task com essa mesmo titulo!! </Alert>
+      }
+      
       <main>
         <ul>
           {tasks.map(task => (
