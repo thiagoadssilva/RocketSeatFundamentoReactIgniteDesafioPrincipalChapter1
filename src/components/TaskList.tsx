@@ -90,11 +90,11 @@ export function TaskList() {
         </div>
       </header>
       {controlField &&
-        <Alert variant="danger">Por favor informe uma tasks! </Alert>
+        <Alert variant="danger">Por favor informe uma task! </Alert>
       }
 
       {controlFieldText &&
-        <Alert variant="danger"> Já existe uma task com essa mesmo titulo!! </Alert>
+        <Alert variant="danger"> Já existe uma task com o mesmo titulo!! </Alert>
       }
       
       <main>
